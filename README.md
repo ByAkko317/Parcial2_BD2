@@ -16,11 +16,12 @@ El proyecto también incluye soporte para **Docker**, permitiendo ejecutar una i
    - **Node.js v18+**
    - **MongoDB local**
 2. Clonar o copiar el proyecto en una carpeta local.
-3. Instalar las dependencias:
+3. Crear la variable de entorno con los datos a utilizar en JWT (clave y expiracion) y los datos de MongoDB (puerto y url).
+4. Instalar las dependencias:
 npm install
-4. Iniciar el servidor de desarrollo:
+5. Iniciar el servidor de desarrollo:
 npm run dev
-5. Acceder a la API desde:
+6. Acceder a la API desde:
 http://localhost:4000
 
 ### 🔹 Opción 2: Ejecución con Docker
