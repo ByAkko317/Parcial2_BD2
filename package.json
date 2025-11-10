@@ -1,15 +1,24 @@
 {
   "name": "parcialintegradorbd2",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "API REST e-commerce - Parcial Integrador Bases de Datos II",
+  "type": "module",
+  "main": "src/app.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/app.js",
-    "start": "node src/app.js"
+    "start": "node src/app.js",
+    "test": "echo \"No se han definido pruebas\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
+  "keywords": [
+    "node",
+    "express",
+    "mongoose",
+    "api",
+    "rest",
+    "jwt",
+    "ecommerce"
+  ],
+  "author": "Pablo",
   "license": "ISC",
   "dependencies": {
     "bcryptjs": "^3.0.3",
