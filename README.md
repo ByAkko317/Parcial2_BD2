@@ -146,3 +146,5 @@ Materia: Bases de Datos II
 Trabajo: Parcial Integrador
 Año: 2025
 Profesor/a: Franco González
+
+entrega formato video lunes 17/11: corregir rutas, variables de entorno en postman, prueba de rutas, muestra de errores según cada método
