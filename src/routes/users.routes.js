@@ -46,5 +46,21 @@ router.delete("/:id", auth, requireAdmin, async (req, res, next) => {
     res.json({ success: true, message: "Usuario y carrito eliminados" });
   } catch (e) { next(e); }
 });
+// PATCH /api/carrito/:usuarioId/update
+router.patch("/:usuarioId/update", auth, async (req, res, next) => {
+  try {
+    const { productoId, cantidad } = req.body;
+    if (req.user.role !== "ADMIN" && req.user.id !== req.params.usuarioId)
+      return res.status(403).json({ success: false, error: "Prohibido" });
+
+    const cart = await getOrCreateCart(req.params.usuarioId);
+    const item = cart.items.find(i => i.producto.toString() === productoId);
+    if (!item) return res.status(404).json({ success: false, error: "Producto no está en el carrito" });
+
+    item.cantidad = cantidad;
+    await cart.save();
+    res.json({ success: true, data: cart });
+  } catch (e) { next(e); }
+});
 
 export default router;

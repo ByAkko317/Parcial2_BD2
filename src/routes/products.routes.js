@@ -33,6 +33,21 @@ router.delete("/:id", auth, requireAdmin, async (req, res, next) => {
   } catch (e) { next(e); }
 });
 
+// GET /api/productos/:id → obtener producto por ID con categoría
+router.get("/:id", async (req, res, next) => {
+  try {
+    const producto = await Product.findById(req.params.id).populate("categoria");
+
+    if (!producto)
+      return res.status(404).json({ success: false, error: "Producto no encontrado" });
+
+    res.json({ success: true, data: producto });
+  } catch (e) {
+    next(e);
+  }
+});
+
+
 // GET /api/productos → listar con categoría (populate)
 router.get("/", async (req, res, next) => {
   try {

@@ -1,0 +1,708 @@
+{
+  "info": {
+    "name": "Parcial BD2 Ecommerce FULL",
+    "_postman_id": "b2d2-ecommerce-full-collection",
+    "description": "Colección completa de endpoints para el Parcial BD2 Ecommerce (Auth, Users, Categories, Products, Cart, Orders, Reviews).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "base_url", "value": "http://localhost:4000" },
+    { "key": "token_cliente", "value": "" },
+    { "key": "token_admin", "value": "" },
+    { "key": "user_id", "value": "" },
+    { "key": "admin_id", "value": "" },
+    { "key": "category_id", "value": "" },
+    { "key": "product_id", "value": "" },
+    { "key": "order_id", "value": "" },
+    { "key": "review_id", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Auth",
+      "item": [
+        {
+          "name": "Register",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Cliente\",\n  \"email\": \"cliente@test.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/register",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "LoginCliente",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"cliente@test.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.success && res.data && res.data.token) {",
+                  "  pm.environment.set('token_cliente', res.data.token);",
+                  "  pm.environment.set('user_id', res.data.user.id);",
+                  "  console.log('token_cliente guardado');",
+                  "} else {",
+                  "  console.log('No se pudo guardar token_cliente');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "LoginAdmin",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@test.com\",\n  \"password\": \"123456\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/auth/login",
+              "host": ["{{base_url}}"],
+              "path": ["api", "auth", "login"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if (res && res.success && res.data && res.data.token) {",
+                  "  pm.environment.set('token_admin', res.data.token);",
+                  "  pm.environment.set('admin_id', res.data.user.id);",
+                  "  console.log('token_admin guardado');",
+                  "} else {",
+                  "  console.log('No se pudo guardar token_admin');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Users (Admin)",
+      "item": [
+        {
+          "name": "Get All Users",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Get User By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Create User (Admin)",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"NuevoCliente\",\n  \"email\": \"nuevo@test.com\",\n  \"password\": \"123456\",\n  \"role\": \"CLIENTE\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/users",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users"]
+            }
+          }
+        },
+        {
+          "name": "Delete User (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/users/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "users", "{{user_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Create Category",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Perifericos\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categorias",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categorias"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if(res && res.success && res.data && res.data._id){",
+                  "  pm.environment.set('category_id', res.data._id);",
+                  "  console.log('category_id guardado');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Categories",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categorias",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categorias"]
+            }
+          }
+        },
+        {
+          "name": "Get Category By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/categorias/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categorias", "{{category_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Category",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Perifericos Actualizado\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/categorias/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categorias", "{{category_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Category",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/categorias/{{category_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "categorias", "{{category_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Create Product",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"nombre\": \"Mouse Logitech\",\n  \"marca\": \"Logitech\",\n  \"precio\": 20000,\n  \"stock\": 10,\n  \"categoria\": \"{{category_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/productos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "productos"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if(res && res.success && res.data && res.data._id){",
+                  "  pm.environment.set('product_id', res.data._id);",
+                  "  console.log('product_id guardado');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Products",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos",
+              "host": ["{{base_url}}"],
+              "path": ["api", "productos"]
+            }
+          }
+        },
+        {
+          "name": "Get Product By Id",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/productos/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "productos", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Update Product Stock",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"stock\": 20\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/productos/{{product_id}}/stock",
+              "host": ["{{base_url}}"],
+              "path": ["api", "productos", "{{product_id}}", "stock"]
+            }
+          }
+        },
+        {
+          "name": "Delete Product",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/productos/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "productos", "{{product_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Cart",
+      "item": [
+        {
+          "name": "Get Cart By User",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/carrito/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carrito", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Add Item To Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productoId\": \"{{product_id}}\",\n  \"cantidad\": 2\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/carrito/{{user_id}}/add",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carrito", "{{user_id}}", "add"]
+            }
+          }
+        },
+        {
+          "name": "Update Item Quantity",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productoId\": \"{{product_id}}\",\n  \"cantidad\": 3\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/carrito/{{user_id}}/update",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carrito", "{{user_id}}", "update"]
+            }
+          }
+        },
+        {
+          "name": "Remove Item From Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"productoId\": \"{{product_id}}\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/carrito/{{user_id}}/remove",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carrito", "{{user_id}}", "remove"]
+            }
+          }
+        },
+        {
+          "name": "Clear Cart",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/carrito/{{user_id}}/clear",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carrito", "{{user_id}}", "clear"]
+            }
+          }
+        },
+        {
+          "name": "Get Cart Total",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/carrito/{{user_id}}/total",
+              "host": ["{{base_url}}"],
+              "path": ["api", "carrito", "{{user_id}}", "total"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Orders",
+      "item": [
+        {
+          "name": "Create Order From Cart",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"metodoPago\": \"EFECTIVO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ordenes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordenes"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if(res && res.success && res.data && res.data._id){",
+                  "  pm.environment.set('order_id', res.data._id);",
+                  "  console.log('order_id guardado');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Orders (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordenes"]
+            }
+          }
+        },
+        {
+          "name": "Get Orders By User",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/user/{{user_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordenes", "user", "{{user_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Order By Id",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordenes", "{{order_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Orders Stats (Admin)",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/stats",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordenes", "stats"]
+            }
+          }
+        },
+        {
+          "name": "Update Order Status (Admin)",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"estado\": \"CONFIRMADO\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{order_id}}/status",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordenes", "{{order_id}}", "status"]
+            }
+          }
+        },
+        {
+          "name": "Delete Order",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/ordenes/{{order_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "ordenes", "{{order_id}}"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Reviews",
+      "item": [
+        {
+          "name": "Create Review",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"producto\": \"{{product_id}}\",\n  \"calificacion\": 5,\n  \"comentario\": \"Muy buen producto\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/resenas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "resenas"]
+            }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "exec": [
+                  "const res = pm.response.json();",
+                  "if(res && res.success && res.data && res.data._id){",
+                  "  pm.environment.set('review_id', res.data._id);",
+                  "  console.log('review_id guardado');",
+                  "}"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "Get All Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/resenas",
+              "host": ["{{base_url}}"],
+              "path": ["api", "resenas"]
+            }
+          }
+        },
+        {
+          "name": "Get Reviews By Product",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/resenas/product/{{product_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "resenas", "product", "{{product_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Top Reviews",
+          "request": {
+            "method": "GET",
+            "header": [],
+            "url": {
+              "raw": "{{base_url}}/api/resenas/top",
+              "host": ["{{base_url}}"],
+              "path": ["api", "resenas", "top"]
+            }
+          }
+        },
+        {
+          "name": "Update Review",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token_cliente}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"calificacion\": 4,\n  \"comentario\": \"Actualizada: sigue siendo buena calidad\"\n}"
+            },
+            "url": {
+              "raw": "{{base_url}}/api/resenas/{{review_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "resenas", "{{review_id}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Review (Admin)",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{token_admin}}" }
+            ],
+            "url": {
+              "raw": "{{base_url}}/api/resenas/{{review_id}}",
+              "host": ["{{base_url}}"],
+              "path": ["api", "resenas", "{{review_id}}"]
+            }
+          }
+        }
+      ]
+    }
+  ]
+}
